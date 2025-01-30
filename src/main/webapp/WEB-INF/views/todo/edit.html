@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Редактирование задачи</title>
+  <script>
+    function checkInput() {
+      var currentDeadline = document.getElementById("current-deadline-value").innerText.trim();
+      var newDeadline = document.getElementById("deadline").value.trim();
+      var hiddenDeadlineField = document.getElementById("current-deadline-hidden");
+
+      // Проверка на наличие текущего дедлайна
+      if (!currentDeadline) {
+        alert("Дедлайн не может быть пустым!");
+        return false; // Остановить отправку формы
+      }
+
+      // Если поле нового дедлайна открыто
+      if (newDeadline === "") {
+        // Если пользователь не ввел нового дедлайна, используем текущее значение
+        hiddenDeadlineField.value = currentDeadline;
+      } else {
+        // Если пользователь ввел новое значение, используем его
+        hiddenDeadlineField.value = newDeadline;
+      }
+
+      return true; // Все проверки пройдены, отправляем форму
+    }
+
+    function toggleDeadlineInput() {
+      var currentDeadlineDiv = document.getElementById("current-deadline");
+      var deadlineInputDiv = document.getElementById("deadline-input");
+      var editButton = document.getElementById("edit-button");
+
+      if (deadlineInputDiv.style.display === "none") {
+        deadlineInputDiv.style.display = "block"; // Показываем поле для ввода
+        currentDeadlineDiv.style.display = "none"; // Скрываем текущую дату
+        editButton.textContent = "Отмена"; // Меняем текст кнопки на "Отмена"
+      } else {
+        deadlineInputDiv.style.display = "none"; // Скрываем поле для ввода
+        currentDeadlineDiv.style.display = "block"; // Показываем текущую дату
+        editButton.textContent = "Изменить"; // Возвращаем текст кнопки
+      }
+    }
+  </script>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/todo/{id}(id=${todo.id})}" th:object="${todo}" onsubmit="return checkInput()">
+  <label for="title">Введите название задачи:</label>
+  <input type="text" th:field="*{title}" id="title" required />
+  <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+  <br />
+
+  <label for="description">Введите описание задачи:</label>
+  <input type="text" th:field="*{description}" id="description" />
+  <div style="color:red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+  <br />
+
+  <label for="progress">Выберите статус:</label>
+  <select th:field="*{progress}" id="progress">
+    <option th:each="level : ${progress}"
+            th:value="${level}"
+            th:text="${level}">Статус выполнения</option>
+  </select>
+  <br />
+
+  <div id="current-deadline">
+    <p>Текущий срок: <span th:text="${todo.deadline}" id="current-deadline-value"></span>
+      <button type="button" id="edit-button" onclick="toggleDeadlineInput()">Изменить</button></p>
+  </div>
+
+  <div id="deadline-input" style="display: none;">
+    <label for="deadline">Введите новый срок:</label>
+    <input type="datetime-local" id="deadline" />
+    <br />
+
+    <button type="button" onclick="toggleDeadlineInput()">Отмена</button>
+  </div>
+
+  <input type="hidden" th:field="*{deadline}" id="current-deadline-hidden" th:value="${todo.deadline}" />
+
+  <div style="color:red">
+    <span th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}">Заполните дату завершения корректно</span>
+  </div>
+
+  <br />
+  <input type="submit" value="Обновить" />
+</form>
+
+</body>
+</html>

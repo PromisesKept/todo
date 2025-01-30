@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление новой задачи</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/todo}" th:object="${todo}">
+  <input type="hidden" th:field="*{progress}" />
+  <label for="title">Введите название:</label>
+  <input type="text" th:field="*{title}" id="title" />
+  <div style="color:red" th:if="${#fields.hasErrors('title')}" th:errors="*{title}">for th</div>
+  <br />
+    <label for="description">Введите описание:</label>
+    <input type="text" th:field="*{description}" id="description" />
+    <br />
+  <label for="deadline">Введите дату завершения:</label>
+  <input type="datetime-local" th:field="*{deadline}" id="deadline" />
+  <br />
+  <div style="color:red">
+    <span th:if="${#fields.hasErrors('deadline')}" th:errors="*{deadline}">Заполните дату завершения корректно</span>
+  </div>
+
+
+  <input type="submit" value="Создать" />
+
+</form>
+
+</body>
+</html>

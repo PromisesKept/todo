@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Задача</title>
+</head>
+<body>
+
+<p><span th:text="${todo.getTitle()}">VALUE</span> для <span th:text="${todo.getUser().getUsername()}">VALUE</span> (<span style="font-size: 12px" th:text="${todo.getUser()}">VALUE</span>)</p>
+<p th:text="${todo.getDescription()}">VALUE</p>
+<p>Находится в статусе: <span th:text="${todo.getProgress()}">VALUE</span></p>
+<p>Срок выполнения: <span th:text="${todo.getDeadline()}">VALUE</span></p>
+
+<br />
+<a th:href="@{/todo/{id}/edit(id=${todo.getId()})}">Изменить</a>
+<br />
+<form th:method="post" th:action="@{/todo/{id}(id=${todo.getId()})}">
+    <input type="hidden" name="_method" value="DELETE"/>
+    <input type="submit" value="Удалить" onclick="return confirm('Вы действительно хотите удалить эту задачу?');" />
+</form>
+
+<br />
+<a th:href="@{/user/{id}(id=${todo.getUser().getId()})}">Вернуться к списку задач</a>
+
+
+
+</body>
+</html>

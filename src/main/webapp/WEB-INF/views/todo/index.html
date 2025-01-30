@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO or not TODO || TODO</title>
+</head>
+<body>
+
+<div th:each="todo : ${todos}">
+  <a th:href="@{/todo/{id}(id=${todo.getId()})}"
+     th:text="${todo.getUser() + ', ' + todo.getTitle() + ', ' + todo.getProgress() + ', ' + todo.getDeadline()}">todo</a>
+
+</div>
+<br />
+ <hr />
+<a href="todo/new">Добавить новую задачу</a>
+
+</body>
+</html>

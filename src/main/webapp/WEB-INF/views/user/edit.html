@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование пользователя</title>
+</head>
+<body>
+
+<p><span th:text="${user.getUsername()}">VALUE</span> <span th:text="${user.getRegistered()}">VALUE</span></p>
+
+<form th:method="POST" th:action="@{/user/{id}(id=${user.getId()})}" th:object="${user}">
+  <input type="hidden" th:field="*{username}" />
+  <input type="hidden" th:field="*{password}" />
+  <label for="name">Введите имя:</label>
+  <input type="text" th:field="*{name}" id="name" />
+  <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">for th</div>
+  <br />
+  <!--
+  <label for="password">Введите новый пароль:</label>
+  <input type="password" th:field="*{password}" id="password" />
+  <div style="font-size: 0.9em; color: #888; margin-top: 5px; padding: 5px; border-left: 2px solid #ccc; background-color: #f9f9f9;">Если не хотите изменять старый, оставьте поле без изменений</div>
+  -->
+  <br />
+  <label for="role">Выберите уровень доступа:</label>
+  <select th:field="*{role}" id="role">
+    <option th:each="level : ${roles}"
+            th:value="${level}"
+            th:text="${level}">Уровни доступа</option>
+  </select>
+  <br />
+  <br />
+  <a th:href="@{/user/{id}(id=${user.getId()})}">Вернуться в личный кабинет</a>
+  <br />
+  <input type="submit" value="Обновить" />
+
+</form>
+
+</body>
+</html>

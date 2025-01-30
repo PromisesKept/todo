@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница пользователя</title>
+</head>
+<body>
+
+<p><span th:text="${user.getUsername()}">VALUE</span>
+<p th:text="${user.getRegistered()}">VALUE</p>
+
+<!--
+<br />
+<a th:href="@{/user}">Вернуться к списку пользователей</a> -->
+<br />
+<a th:href="@{/user/{id}/edit(id=${user.getId()})}">Изменить пользователя</a>
+<br />
+
+<form th:method="post" th:action="@{/user/{id}(id=${user.getId()})}">
+    <input type="hidden" name="_method" value="DELETE"/>
+    <input type="submit" value="Убить" onclick="return confirm('Вы действительно хотите уничтожить этого пользователя?');" />
+</form>
+
+
+
+<h3>Список задач:</h3>
+<p>
+   <a th:href="@{/user/{id}(id=${userId}, sort='start')}" th:text="'Сортировать по дате создания'">Сортировать по дате создания</a> |
+    <a th:href="@{/user/{id}(id=${userId}, sort='deadline')}" th:text="'Сортировать по сроку'">Сортировать по сроку</a> |
+    <a th:href="@{/user/{id}(id=${userId}, sort='progress')}" th:text="'Сортировать по статусу'">Сортировать по статусу</a>
+</p>
+
+<!-- Форма для фильтрации задач по статусу -->
+<form th:method="get" th:action="@{/user/{id}(id=${userId})}">
+    <label for="filter">Фильтр по статусу:</label>
+    <select name="filter" id="filter">
+        <option value="">-- Все статусы --</option>
+        <option th:each="status : ${statuses}"
+                th:value="${status.name()}"
+                th:text="${status.name()}"
+                th:selected="${status.name() == filter}"></option>
+    </select>
+    <input type="hidden" name="sort" th:value="${sort}"/>
+    <input type="submit" value="Фильтровать"/>
+</form>
+
+<ul>
+    <li th:each="todo : ${todos}">
+        <a th:href="@{/todo/{id}(id=${todo.id})}" th:text="${todo.title}">Task Title</a>
+        - <span th:text="${todo.description}">Task Description</span>
+        - <span th:text="${todo.deadline}">Deadline</span>
+        - <span th:text="${todo.progress}">Status</span>
+        - <span th:text="${todo.start}">Creation Date</span>
+    </li>
+</ul>
+
+
+
+<br />
+<a th:href="@{/todo/new}">Добавить задачу</a>
+<br />
+
+
+</body>
+</html>
