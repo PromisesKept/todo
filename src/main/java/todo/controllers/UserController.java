@@ -32,7 +32,7 @@ public class UserController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @GetMapping()
+    @GetMapping("/")
     public String index(Model model) {
         logger.info("GET /users invoked by index(Model model)");
         // Получаем людей из БД и передаем их в представление через модель
@@ -40,7 +40,7 @@ public class UserController {
         return "user/index";
     }
 
-    @PostMapping()
+    @PostMapping("/")
     public String create(@ModelAttribute("user") @Valid UserEntity user, BindingResult bindingResult) {
         logger.info("create start");
         if (userService.findByUsername(user.getUsername()).isPresent()) {

@@ -30,14 +30,14 @@ public class TodoController {
     }
 
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @GetMapping()
+    @GetMapping("/")
     public String index(Model model) {
         logger.info("GET /todos invoked by index(Model model)");
         model.addAttribute("todos", todoService.getAllTodos());
         return "todo/index";
     }
 
-    @PostMapping()
+    @PostMapping("/")
     public String create(@ModelAttribute("todo") @Valid TodoEntity todo, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             logger.info("Validation errors: " + bindingResult.getAllErrors());
