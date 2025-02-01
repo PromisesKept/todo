@@ -63,43 +63,43 @@ public class UserServiceTest {
     }
 
     @Test
-    void save_correct() {
+    void saveCorrect() {
         userService.save(user);
         verify(userRepository).save(user);
     }
 
     @Test
-    void delete_correct() {
+    void deleteCorrect() {
         userService.delete(user.getId());
         verify(userRepository).deleteById(user.getId());
     }
 
     @Test
-    void addUser_correct() {
+    void addUserCorrect() {
         userService.addUser(user);
         verify(userRepository).save(user);
     }
 
     @Test
-    void findAll_correct() {
+    void findAllCorrect() {
         userService.findAll();
         verify(userRepository).findAll();
     }
 
     @Test
-    void findByUsername_correct() {
+    void findByUsernameCorrect() {
         userService.findByUsername(user.getUsername());
         verify(userRepository).findByUsername(user.getUsername());
     }
 
     @Test
-    void findById_correct() throws UserNotFoundException {
+    void findByIdCorrect() throws UserNotFoundException {
         userService.findById(user.getId());
         verify(userRepository).findById(user.getId());
     }
 
     @Test
-    void findById_userNotFoundThrowsException() {
+    void findByIdUserNotFoundThrowsException() {
         Long userId = 4L;
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
         assertThrows(UserNotFoundException.class, () -> userService.findById(userId));
@@ -107,19 +107,19 @@ public class UserServiceTest {
     }
 
     @Test
-    void show_correct() {
+    void showCorrect() {
         String result = userService.show(user.getId(), null, null, model);
         assertEquals("user/show", result);
     }
 
     @Test
-    void show_error() {
+    void showError() {
         String result = userService.show(4L, null, null, model);
         assertEquals("redirect:/error", result);
     }
 
     @Test
-    void update_correct() {
+    void updateCorrect() {
         UserEntity updatedUser = new UserEntity();
         updatedUser.setName("Updated User");
         updatedUser.setPassword("1234");
@@ -130,7 +130,7 @@ public class UserServiceTest {
     }
 
     @Test
-    void update_error() {
+    void updateError() {
         String result = userService.update(user, 4L);
         assertEquals("redirect:/error", result);
     }

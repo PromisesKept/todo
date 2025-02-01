@@ -35,7 +35,7 @@ public class TodoServiceAiTest {
     }
 
     @Test
-    void testDelete_TodoExists() {
+    void testDeleteTodoExists() {
         when(todoRepository.findById(anyLong())).thenReturn(Optional.of(todo));
 
         todoService.delete(1L);
@@ -44,7 +44,7 @@ public class TodoServiceAiTest {
     }
 
     @Test
-    void testDelete_TodoNotFound() {
+    void testDeleteTodoNotFound() {
         when(todoRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         todoService.delete(1L);

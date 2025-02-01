@@ -59,7 +59,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void delete_correct() {
+    void deleteCorrect() {
         when(todoRepository.findById(1L)).thenReturn(Optional.of(todo));
         doNothing().when(todoRepository).delete(any(TodoEntity.class));
 
@@ -69,7 +69,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void delete_todoNotFound() {
+    void deleteTodoNotFound() {
         when(todoRepository.findById(1L)).thenReturn(Optional.empty());
 
         Long userId = todoService.delete(1L);
@@ -78,7 +78,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void create_correct() {
+    void createCorrect() {
         Optional<Long> userId = todoService.create(todo);
         if (userId.isPresent()) {
             assertEquals(2L, userId.get());
@@ -87,7 +87,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void create_todoNotFound() {
+    void createTodoNotFound() {
         when(todoRepository.findById(1L)).thenReturn(Optional.empty());
         Optional<Long> createTodo = todoService.create(todo);
         createTodo.ifPresent(a -> assertEquals(2L, a));
@@ -95,7 +95,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void update_correct() {
+    void updateCorrect() {
         Long id = 1L;
         TodoEntity updatedTodo = new TodoEntity();
         updatedTodo.setId(id);
@@ -121,7 +121,7 @@ public class TodoServiceTest {
     }
 
     @Test
-    void update_todoNotFound() {
+    void updateTodoNotFound() {
         Long id = 2L;
         TodoEntity updatedTodo = new TodoEntity();
         when(todoRepository.findById(id)).thenReturn(Optional.empty());
