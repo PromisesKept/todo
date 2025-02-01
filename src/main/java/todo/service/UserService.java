@@ -88,12 +88,14 @@ public class UserService implements UserDetailsService {
             model.addAttribute("user", user);
 
             // сортировка
-            List<TodoEntity> todos;
+            List<TodoEntity> todos = null;
             switch (sort) {
+                case Sort.START -> todos = todoService.findAllByStart(id);
                 case Sort.PROGRESS -> todos = todoService.findAllByProgress(id);
                 case Sort.DEADLINE -> todos = todoService.findAllByDeadline(id);
-                default -> todos = todoService.findAllByStart(id);
+                default -> logger.warn("switch (sort) обратился в default");
             }
+
 
             // фильтрация
             if (filter != null && !filter.isEmpty()) {
