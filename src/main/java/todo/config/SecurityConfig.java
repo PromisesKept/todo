@@ -52,40 +52,24 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**", "/user", "/todo").hasRole(ADMIN.getAuthority())
                         .requestMatchers(HttpMethod.GET, "/user/{id}/edit").hasAnyAuthority(Role.USER.getAuthority())
                         .requestMatchers(HttpMethod.POST, "/user/{id}/edit").hasAnyAuthority(Role.USER.getAuthority(), Role.ADMIN.getAuthority(), Role.MODERATOR.getAuthority())
-//                        .requestMatchers(antMatcher("user/{\\d}/edit")).hasAnyAuthority(Role.ADMIN.getAuthority(), Role.MODERATOR.getAuthority())
                         .anyRequest().authenticated())
-//                        .anyRequest().permitAll())
                 .formLogin(login -> login
                         .loginProcessingUrl("/login")
-//                        .loginPage("/login")
                         .successHandler(((request, response, authentication) -> {
                             Long userId = ((UserEntity) authentication.getPrincipal()).getId();
                             response.sendRedirect("/user/" + userId);
                         }))
                         .permitAll())
                 .logout(logout -> logout
-//                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .deleteCookies("JSESSIONID"))
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedPage("/403"));
 
         return http.build();
-//        return http.csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> auth.requestMatchers("todo/new", "user/new", "user/registered").permitAll()
-//                        .requestMatchers( "todo/**", "user/**").authenticated())
-//                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)
-//                .build();
     }
 
 
-//    @Bean
-//    public AuthenticationProvider authenticationProvider() {
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//        provider.setUserDetailsService(userDetailsService());
-//        provider.setPasswordEncoder(passwordEncoder());
-//        return provider;
-//    }
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =

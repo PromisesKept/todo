@@ -1,6 +1,5 @@
 package todo.controllers;
 
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,6 @@ public class TodoController {
         logger.info("TodoController instantiated");
     }
 
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/")
     public String index(Model model) {
         logger.info("GET /todos invoked by index(Model model)");
