@@ -75,7 +75,11 @@ public class UserService implements UserDetailsService {
 
     public String show(Long id, String sort, String filter, Model model) {
         Optional<UserEntity> userOptional = userRepository.findById(id);
-        if (sort == null) sort = "start";
+
+        // установка сортировки по-умолчанию
+        if (sort == null) {
+            sort = "start";
+        }
 
         if (userOptional.isPresent()) {
             User user = User.toModel(userOptional.get());
