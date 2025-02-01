@@ -15,7 +15,6 @@ import todo.entity.UserEntity;
 import todo.exception.UserNotFoundException;
 import todo.service.UserService;
 
-@Transactional
 @Controller
 @RequestMapping("/user")
 public class UserController {

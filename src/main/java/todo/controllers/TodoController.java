@@ -14,7 +14,6 @@ import todo.entity.TodoEntity;
 import todo.exception.TodoNotFoundException;
 import todo.service.TodoService;
 
-@Transactional
 @Controller
 @RequestMapping("/todo")
 public class TodoController {
