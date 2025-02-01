@@ -28,6 +28,7 @@ import static org.mockito.Mockito.*;
 @Transactional
 public class TodoServiceTest {
 
+    // именно такая реализация, тк тестовые задачи создаются на реальном пользователе (id = 2L)
     @Mock
     private TodoRepository todoRepository;
 
