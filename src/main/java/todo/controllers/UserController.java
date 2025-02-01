@@ -47,7 +47,7 @@ public class UserController {
             return "user/new";
         }
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(error -> logger.warn(error.getDefaultMessage()));
+            bindingResult.getAllErrors().forEach(error -> System.out.println(error.getDefaultMessage()));
             return "user/new";
         }
         logger.info(bindingResult.getAllErrors().toString());
