@@ -55,11 +55,10 @@ public class UserServiceTest {
         user = new UserEntity();
         user.setUsername("test");
         user.setName("Test User");
-        user.setPassword("123"); // Либо значение, которое вы хотите
+        user.setPassword("123");
         user.setRole(Role.GUEST);
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        // MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -100,7 +99,7 @@ public class UserServiceTest {
 
     @Test
     void findByIdUserNotFoundThrowsException() {
-        Long userId = 4L;
+        Long userId = 4L; // этого точно нет (и не будет) в БД
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
         assertThrows(UserNotFoundException.class, () -> userService.findById(userId));
         verify(userRepository).findById(userId);
