@@ -55,6 +55,7 @@ public class UserController {
             user.setRole(Role.USER);
             logger.info("Роль установлена внутри метода create");
         }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         logger.info("В итоге отправляется на сохранение в репозиторий: \n" + user);
         userService.save(user);
