@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import todo.Progress;
 import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
 import todo.exception.TodoNotFoundException;
@@ -78,6 +79,10 @@ public class TodoService {
             todoRepository.save(existingTodo);
             return "redirect:/todo/{id}";
         } else return "redirect:/error";
+    }
+
+    public void setProgressTODO(TodoEntity todo) {
+        todo.setProgress(Progress.TODO);
     }
 
     public TodoEntity findById(Long id) throws TodoNotFoundException {

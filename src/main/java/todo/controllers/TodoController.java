@@ -48,7 +48,7 @@ public class TodoController {
 
     @GetMapping("/new")
     public String newTodo(@ModelAttribute("todo") TodoEntity todo) {
-        todo.setProgress(Progress.TODO);
+        todoService.setProgressTODO(todo);
         return "todo/new";
     }
 
