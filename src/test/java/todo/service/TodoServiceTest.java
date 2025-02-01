@@ -1,7 +1,6 @@
 package todo.service;
 
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import todo.Application;
-import todo.Progress;
+import todo.enums.Progress;
 import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
 import todo.repository.TodoRepository;

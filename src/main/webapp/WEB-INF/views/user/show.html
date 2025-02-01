@@ -25,9 +25,9 @@
 
 <h3>Список задач:</h3>
 <p>
-   <a th:href="@{/user/{id}(id=${userId}, sort='start')}" th:text="'Сортировать по дате создания'">Сортировать по дате создания</a> |
-    <a th:href="@{/user/{id}(id=${userId}, sort='deadline')}" th:text="'Сортировать по сроку'">Сортировать по сроку</a> |
-    <a th:href="@{/user/{id}(id=${userId}, sort='progress')}" th:text="'Сортировать по статусу'">Сортировать по статусу</a>
+    <a th:href="@{/user/{id}(id=${userId}, sort=${'START'})}" th:text="'Сортировать по дате создания'">Сортировать по дате создания</a> |
+    <a th:href="@{/user/{id}(id=${userId}, sort=${'DEADLINE'})}" th:text="'Сортировать по сроку'">Сортировать по сроку</a> |
+    <a th:href="@{/user/{id}(id=${userId}, sort=${'PROGRESS'})}" th:text="'Сортировать по статусу'">Сортировать по статусу</a>
 </p>
 
 <!-- Форма для фильтрации задач по статусу -->
@@ -40,7 +40,7 @@
                 th:text="${status.name()}"
                 th:selected="${status.name() == filter}"></option>
     </select>
-    <input type="hidden" name="sort" th:value="${sort}"/>
+    <input type="hidden" name="sort" th:value="${sort.name()}"/>
     <input type="submit" value="Фильтровать"/>
 </form>
 

@@ -1,6 +1,6 @@
 package todo.models;
 
-import todo.Role;
+import todo.enums.Role;
 import todo.entity.UserEntity;
 import java.time.LocalDateTime;
 import java.util.List;

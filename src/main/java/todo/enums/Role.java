@@ -1,4 +1,4 @@
-package todo;
+package todo.enums;
 
 import org.springframework.security.core.GrantedAuthority;
 

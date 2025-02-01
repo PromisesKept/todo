@@ -3,7 +3,7 @@ package todo.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import todo.Progress;
+import todo.enums.Progress;
 import java.time.LocalDateTime;
 
 @Entity

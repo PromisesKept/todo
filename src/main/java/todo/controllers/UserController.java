@@ -9,8 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import todo.Role;
+import todo.enums.Role;
 import todo.entity.UserEntity;
+import todo.enums.Sort;
 import todo.exception.UserNotFoundException;
 import todo.service.UserService;
 
@@ -83,7 +84,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long id,
-                       @RequestParam(value = "sort", required = false, defaultValue = "deadline") String sort,
+                       @RequestParam(value = "sort", required = false, defaultValue = "deadline") Sort sort,
                        @RequestParam(value = "filter", required = false) String filter, Model model) {
         return userService.show(id, sort, filter, model);
     }

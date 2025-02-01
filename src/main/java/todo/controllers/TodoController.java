@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import todo.Progress;
+import todo.enums.Progress;
 import todo.entity.TodoEntity;
 import todo.exception.TodoNotFoundException;
 import todo.service.TodoService;

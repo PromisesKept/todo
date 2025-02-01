@@ -4,16 +4,16 @@ import jakarta.transaction.Transactional;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import todo.Progress;
+import todo.enums.Progress;
 import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
+import todo.enums.Sort;
 import todo.exception.UserNotFoundException;
 import todo.models.User;
 import todo.repository.UserRepository;
@@ -73,12 +73,12 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    public String show(Long id, String sort, String filter, Model model) {
+    public String show(Long id, Sort sort, String filter, Model model) {
         Optional<UserEntity> userOptional = userRepository.findById(id);
 
         // установка сортировки по-умолчанию
         if (sort == null) {
-            sort = "start";
+            sort = Sort.START;
         }
 
         if (userOptional.isPresent()) {
@@ -90,8 +90,8 @@ public class UserService implements UserDetailsService {
             // сортировка
             List<TodoEntity> todos;
             switch (sort) {
-                case "progress" -> todos = todoService.findAllByProgress(id);
-                case "deadline" -> todos = todoService.findAllByDeadline(id);
+                case Sort.PROGRESS -> todos = todoService.findAllByProgress(id);
+                case Sort.DEADLINE -> todos = todoService.findAllByDeadline(id);
                 default -> todos = todoService.findAllByStart(id);
             }
 

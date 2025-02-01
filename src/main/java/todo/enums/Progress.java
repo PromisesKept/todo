@@ -1,4 +1,4 @@
-package todo;
+package todo.enums;
 
 public enum Progress {
     TODO,

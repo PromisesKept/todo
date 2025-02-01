@@ -1,6 +1,6 @@
 package todo.models;
 
-import todo.Progress;
+import todo.enums.Progress;
 import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
 
