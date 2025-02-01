@@ -55,9 +55,9 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         logger.info("Начинает работу метод loadUserByUsername");
         Optional<UserEntity> user = userRepository.findByUsername(username);
-        logger.info("В Optional<UserEntity> был добавлен: " + user);
+        logger.info("В Optional<UserEntity> был добавлен: {}", user);
         if (user.isEmpty()) throw new UsernameNotFoundException("Пользователь не найден");
-        logger.info("в return это выглядит так: " + user.get());
+        logger.info("в return это выглядит так: {}", user.get());
         return user.get();
     }
 
@@ -120,16 +120,27 @@ public class UserService implements UserDetailsService {
         Optional<UserEntity> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             UserEntity existingUser = userOptional.get();
-            logger.info("Имя в БД: " + existingUser.getName());
-            if (user.getName() != null || !user.getName().trim().isEmpty()) existingUser.setName(user.getName().trim());
-            if (user.getPassword() != null || !user.getPassword().trim().isEmpty()) existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            else user.setPassword(existingUser.getPassword());
+            logger.info("Имя в БД: {}", existingUser.getName());
 
-            logger.info("Роль до установки:" + existingUser.getRole());
+            if (!user.getName()
+                    .trim()
+                    .isEmpty() || user.getName() != null) {
+                existingUser.setName(user.getName().trim());
+            }
+
+            if (!user.getPassword()
+                    .trim()
+                    .isEmpty() || user.getPassword() != null) {
+                existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            } else {
+                user.setPassword(existingUser.getPassword());
+            }
+
+            logger.info("Роль до установки:{}", existingUser.getRole());
             existingUser.setRole(user.getRole());
-            logger.info("Роль после установки:" + existingUser.getRole());
+            logger.info("Роль после установки:{}", existingUser.getRole());
 
-            logger.info("Теперь имя = " + existingUser.getName());
+            logger.info("Теперь имя = {}", existingUser.getName());
             userRepository.save(existingUser);
             logger.info("Отправлено в БД");
             return "redirect:/user/{id}";

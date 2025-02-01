@@ -40,7 +40,8 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public String create(@ModelAttribute("user") @Valid UserEntity user, BindingResult bindingResult) {
+    public String create(@ModelAttribute("user") @Valid UserEntity user,
+                         BindingResult bindingResult) {
         logger.info("create start");
         if (userService.findByUsername(user.getUsername()).isPresent()) {
             bindingResult.rejectValue("username", "error.user", "Такой логин уже существует.");
@@ -57,9 +58,9 @@ public class UserController {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        logger.info("В итоге отправляется на сохранение в репозиторий: \n" + user);
+        logger.info("В итоге отправляется на сохранение в репозиторий: \n{}", user);
         userService.save(user);
-        logger.info(user + "был успешно отправлен на сохранение");
+        logger.info("{} был успешно отправлен на сохранение", user);
         return "redirect:/user/ok";
     }
 
@@ -90,15 +91,17 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
-    public String update(@ModelAttribute("user") @Valid UserEntity user, BindingResult bindingResult, @PathVariable("id") Long id) {
+    public String update(@ModelAttribute("user") @Valid UserEntity user,
+                         BindingResult bindingResult,
+                         @PathVariable("id") Long id) {
         if (bindingResult.hasErrors()) {
             bindingResult.getFieldErrors().forEach(error -> {
-                System.out.println("Ошибка в поле: " + error.getField() + ", Сообщение: " + error.getDefaultMessage());
+                logger.info("Ошибка в поле: {},\n Сообщение: {}", error.getField(), error.getDefaultMessage());
             });
             return "user/edit";
         }
 
-        logger.info("Имя из формы: " + user.getName());
+        logger.info("Имя из формы: {}", user.getName());
         return userService.update(user, id);
     }
 

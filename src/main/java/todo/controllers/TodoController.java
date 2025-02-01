@@ -20,7 +20,6 @@ import java.util.Optional;
 public class TodoController {
 
     public static final Logger logger = LoggerFactory.getLogger(TodoController.class);
-
     private final TodoService todoService;
 
     @Autowired
@@ -37,9 +36,10 @@ public class TodoController {
     }
 
     @PostMapping("/")
-    public String create(@ModelAttribute("todo") @Valid TodoEntity todo, BindingResult bindingResult) {
+    public String create(@ModelAttribute("todo") @Valid TodoEntity todo,
+                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            logger.info("Ошибка валидации на форме создания задачи: " + bindingResult.getAllErrors());
+            logger.info("Ошибка валидации на форме создания задачи: {}", bindingResult.getAllErrors());
             return "todo/new";
         }
 
@@ -60,7 +60,7 @@ public class TodoController {
 
     @DeleteMapping("/{id}")
     public String deleteTodo(@PathVariable("id") Long id) {
-        logger.info("Запрос в TodoController на удаление задачи с id: " + id);
+        logger.info("Запрос в TodoController на удаление задачи с id: {}", id);
         return "redirect:/user" + todoService.delete(id);
     }
 
@@ -71,8 +71,12 @@ public class TodoController {
     }
 
     @PostMapping("/{id}")
-    public String update(@ModelAttribute("todo") @Valid TodoEntity todo, BindingResult bindingResult, @PathVariable("id") Long id) {
-        if (bindingResult.hasErrors()) return "todo/edit";
+    public String update(@ModelAttribute("todo") @Valid TodoEntity todo,
+                         BindingResult bindingResult,
+                         @PathVariable("id") Long id) {
+        if (bindingResult.hasErrors()) {
+            return "todo/edit";
+        }
         return todoService.update(id, todo);
     }
 
@@ -81,7 +85,7 @@ public class TodoController {
         logger.info("Запускаю @GetMapping в TodoController с /{id}/edit");
         TodoEntity todo = todoService.findById(id);
         logger.info("Ошибки не обнаружено");
-        System.out.println(todo.getDeadline());
+        logger.info(todo.getDeadline().toString());
         model.addAttribute("todo", todo);
         model.addAttribute("progress", Progress.values());
         model.addAttribute("deadline", todo.getDeadline());
