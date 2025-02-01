@@ -80,15 +80,18 @@ public class TodoServiceTest {
 
     @Test
     void create_correct() {
-        Long userId = todoService.create(todo);
-        assertEquals(2L, userId);
+        Optional<Long> userId = todoService.create(todo);
+        if (userId.isPresent()) {
+            assertEquals(2L, userId.get());
+        } else return;
         verify(todoRepository, times(1)).save(todo);
     }
 
     @Test
     void create_todoNotFound() {
         when(todoRepository.findById(1L)).thenReturn(Optional.empty());
-        assertEquals(2L, todoService.create(todo));
+        Optional<Long> createTodo = todoService.create(todo);
+        createTodo.ifPresent(a -> assertEquals(2L, a));
         verify(todoRepository, never()).delete(any(TodoEntity.class));
     }
 

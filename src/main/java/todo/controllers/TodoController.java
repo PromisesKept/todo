@@ -13,6 +13,8 @@ import todo.entity.TodoEntity;
 import todo.exception.TodoNotFoundException;
 import todo.service.TodoService;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/todo")
 public class TodoController {
@@ -37,10 +39,17 @@ public class TodoController {
     @PostMapping("/")
     public String create(@ModelAttribute("todo") @Valid TodoEntity todo, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            logger.info("Validation errors: " + bindingResult.getAllErrors());
+            logger.info("Ошибка валидации на форме создания задачи: " + bindingResult.getAllErrors());
             return "todo/new";
         }
-        return "redirect:/user/" + todoService.create(todo);
+
+        Optional<Long> createTodoId = todoService.create(todo);
+        if (createTodoId.isPresent()) {
+            return "redirect:/user/" + createTodoId;
+        } else {
+            logger.warn("Не удалось создать задачу. Пользователь не найден или не аутентифицирован. КАК ТЫ ВООБЩЕ СЮДА ПОПАЛ, ЭУ?! Напиши мне, дам премию (пизды)");
+        } return "redirect:/error";
+
     }
 
     @GetMapping("/new")

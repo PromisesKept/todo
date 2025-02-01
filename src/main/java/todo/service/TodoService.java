@@ -13,6 +13,7 @@ import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
 import todo.exception.TodoNotFoundException;
 import todo.exception.UserMustBeAuthenticated;
+import todo.exception.UserNotFoundException;
 import todo.repository.TodoRepository;
 import todo.repository.UserRepository;
 
@@ -34,37 +35,59 @@ public class TodoService {
         this.userRepository = userRepository;
     }
 
-    private UserEntity getCurrentUser() throws UserMustBeAuthenticated {
+    private UserEntity getCurrentUser() throws UserMustBeAuthenticated, UserNotFoundException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) throw new UserMustBeAuthenticated("User must be authenticated");
-        return userRepository.findByUsername(auth.getName()).get();
+        if (auth == null) {
+            throw new UserMustBeAuthenticated("User must be authenticated");
+        }
+        Optional<UserEntity> currentUser = userRepository.findByUsername(auth.getName());
+        if (currentUser.isEmpty()) {
+            throw new UserNotFoundException("User NFE! Ты кто ваще?! Как ты сюда попал?!");
+        } else return currentUser.get();
     }
 
     public Long delete(Long id) {
-        UserEntity currentUser = getCurrentUser(); // проверка пользователя на аутентификацию
-        logger.info("Запрос из TodoController в TodoService на удаление задачи с id: {}", id);
-        TodoEntity todo = todoRepository.findById(id).orElse(null);
-        if (todo != null) {
-            todo.setUser(null);
-            todoRepository.delete(todo);
-            System.out.println("Задача с id " + id + " была успешно удалена.");
-        } else {
-            System.out.println("Задача с id " + id + " не найдена для удаления.");
+        try {
+            UserEntity currentUser = getCurrentUser(); // проверка пользователя на аутентификацию
+            logger.info("Запрос из TodoController в TodoService на удаление задачи с id: {}", id);
+            TodoEntity todo = todoRepository.findById(id).orElse(null);
+            if (todo != null) {
+                todo.setUser(null);
+                todoRepository.delete(todo);
+                logger.info("Задача с id {} была успешно удалена.", id);
+            } else {
+                logger.info("Задача с id {} не найдена для удаления.", id);
+            }
+            return currentUser.getId();
+        } catch (UserMustBeAuthenticated | UserNotFoundException e) {
+            logger.error("Ошибка при удалении задачи: {}", e.getMessage());
+            return null;
         }
-        return currentUser.getId();
+
     }
 
-    public Long create(TodoEntity todo) {
-        UserEntity currentUser = getCurrentUser();
-        todo.setUser(currentUser);
-        logger.info("Create todo in Service: {}", todo);
-        todoRepository.save(todo);
-        return currentUser.getId();
+    public Optional<Long> create(TodoEntity todo) {
+        try {
+            UserEntity currentUser = getCurrentUser();
+            todo.setUser(currentUser);
+            logger.info("Попытка создания задачи в TodoService: {}", todo);
+            todoRepository.save(todo);
+            logger.info("Задача {} создана успешно!", todo);
+            return Optional.of(currentUser.getId());
+        } catch (UserMustBeAuthenticated | UserNotFoundException e) {
+            logger.error("Ошибка создания задачи: {}", e.getMessage());
+            return Optional.empty();
+        }
     }
 
     public void show(Long id, Model model) {
-        model.addAttribute("todo", todoRepository.findById(id).get());
+        todoRepository.findById(id).ifPresentOrElse(
+                todo -> model.addAttribute("todo", todo),
+                () -> model.addAttribute("error", "Todo не найдена")
+        );
     }
+
+
 
     public String update(Long id, TodoEntity todo) {
         Optional<TodoEntity> todoOptional = todoRepository.findById(id);
