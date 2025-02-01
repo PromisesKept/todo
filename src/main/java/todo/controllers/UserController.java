@@ -50,7 +50,7 @@ public class UserController {
             bindingResult.getAllErrors().forEach(error -> logger.warn(error.getDefaultMessage()));
             return "user/new";
         }
-        logger.info(bindingResult.getAllErrors().toString());
+
         if (user.getRole() == null) {
             user.setRole(Role.USER);
             logger.info("Роль установлена внутри метода create");
