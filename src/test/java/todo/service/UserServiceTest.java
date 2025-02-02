@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -15,16 +16,15 @@ import todo.Application;
 import todo.enums.Role;
 import todo.entity.UserEntity;
 import todo.exception.UserNotFoundException;
+import todo.models.User;
 import todo.repository.UserRepository;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest(classes = Application.class)
 @ExtendWith(SpringExtension.class)
@@ -63,7 +63,8 @@ public class UserServiceTest {
 
     @Test
     void saveCorrect() {
-        userService.save(user);
+        User userDto = User.toModel(user);
+        userService.save(userDto);
         verify(userRepository).save(user);
     }
 
@@ -75,8 +76,16 @@ public class UserServiceTest {
 
     @Test
     void addUserCorrect() {
-        userService.addUser(user);
-        verify(userRepository).save(user);
+        userService.addUser(User.toModel(user));
+        ArgumentCaptor<UserEntity> userEntityCaptor = ArgumentCaptor.forClass(UserEntity.class);
+        verify(userRepository).save(userEntityCaptor.capture());
+
+        // Проверяем, что свойства захваченной сущности совпадают с теми, которые мы ожидали
+        UserEntity savedEntity = userEntityCaptor.getValue();
+
+        assertEquals(user.getName(), savedEntity.getName());
+        assertEquals(passwordEncoder.encode(user.getPassword()), savedEntity.getPassword());
+        assertEquals(user.getRole(), savedEntity.getRole());
     }
 
     @Test
@@ -119,7 +128,8 @@ public class UserServiceTest {
 
     @Test
     void updateCorrect() {
-        UserEntity updatedUser = new UserEntity();
+        User updatedUser = new User();
+        updatedUser.setId(user.getId());
         updatedUser.setName("Updated User");
         updatedUser.setPassword("1234");
         updatedUser.setRole(Role.USER);
@@ -130,7 +140,7 @@ public class UserServiceTest {
 
     @Test
     void updateError() {
-        String result = userService.update(user, 4L);
+        String result = userService.update(User.toModel(user), 4L);
         assertEquals("redirect:/error", result);
     }
 

@@ -13,6 +13,7 @@ import todo.enums.Role;
 import todo.entity.UserEntity;
 import todo.enums.Sort;
 import todo.exception.UserNotFoundException;
+import todo.models.User;
 import todo.service.UserService;
 
 @Controller
@@ -40,7 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public String create(@ModelAttribute("user") @Valid UserEntity user,
+    public String create(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult) {
         logger.info("create start");
         if (userService.findByUsername(user.getUsername()).isPresent()) {
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/new")
-    public String newUser(@ModelAttribute("user") UserEntity user) {
+    public String newUser(@ModelAttribute("user") User user) {
         logger.info("newUser start");
         user.setRole(Role.USER);
         logger.info("{} - установленная роль", user.getRole());
@@ -91,7 +92,7 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
-    public String update(@ModelAttribute("user") @Valid UserEntity user,
+    public String update(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult,
                          @PathVariable("id") Long id) {
         if (bindingResult.hasErrors()) {
@@ -118,9 +119,9 @@ public class UserController {
     }
 
     @PostMapping("/registered")
-    public String addUser(@RequestBody UserEntity userEntity) {
-        userService.addUser(userEntity);
-        return userEntity.getUsername() + "был создан";
+    public String addUser(@RequestBody User user) {
+        userService.addUser(user);
+        return user.getUsername() + "был создан";
     }
 
 

@@ -38,16 +38,18 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void save(UserEntity user) {
-        userRepository.save(user);
+    public void save(User user) {
+        UserEntity userEntity = User.toEntity(user);
+        userRepository.save(userEntity);
     }
 
     public void delete(Long id) {
         userRepository.deleteById(id);
     }
 
-    public void addUser(UserEntity userEntity) {
-        userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
+    public void addUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        UserEntity userEntity = User.toEntity(user);
         userRepository.save(userEntity);
     }
 
@@ -116,7 +118,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public String update(UserEntity user, Long id) {
+    public String update(User user, Long id) {
         Optional<UserEntity> userOptional = userRepository.findById(id);
         if (userOptional.isPresent()) {
             UserEntity existingUser = userOptional.get();

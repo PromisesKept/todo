@@ -1,5 +1,6 @@
 package todo.models;
 
+import todo.entity.TodoEntity;
 import todo.enums.Role;
 import todo.entity.UserEntity;
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 public class User {
     private Long id;
     private String username;
+    private String password;
     private String name;
     private List<Todo> todos;
     private LocalDateTime registered;
@@ -18,6 +20,7 @@ public class User {
         User model = new User();
         model.setId(entity.getId());
         model.setUsername(entity.getUsername());
+        model.setPassword(entity.getPassword()); // мне так не нравится...
         model.setName(entity.getName());
         model.setTodos(entity.getTodos().stream().map(Todo::toModel).collect(Collectors.toList()));
         model.setRegistered(entity.getRegistered());
@@ -26,12 +29,31 @@ public class User {
         return model;
     }
 
+    public static UserEntity toEntity(User model) {
+        UserEntity entity = new UserEntity();
+        entity.setId(model.getId());
+        entity.setUsername(model.getUsername());
+        entity.setPassword(model.getPassword()); // мне так не нравится...
+        entity.setName(model.getName());
+        entity.setRole(model.getRole());
+
+        // Todo в TodoEntity
+        if (model.getTodos() != null) {
+            List<TodoEntity> todoEntities = model.getTodos().stream()
+                    .map(Todo::toEntity)
+                    .collect(Collectors.toList());
+            entity.setTodos(todoEntities);
+        }
+
+        return entity;
+    }
+
 
     public String getUsername() {
         return username;
     }
     // Нужен, тк это модель!
-    private void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public Long getId() {
@@ -64,6 +86,12 @@ public class User {
     // А тут нужен! Это модель!
     public void setRegistered(LocalDateTime registered) {
         this.registered = registered;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 
