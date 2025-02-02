@@ -14,6 +14,7 @@ import todo.entity.UserEntity;
 import todo.exception.TodoNotFoundException;
 import todo.exception.UserMustBeAuthenticated;
 import todo.exception.UserNotFoundException;
+import todo.models.Todo;
 import todo.repository.TodoRepository;
 import todo.repository.UserRepository;
 
@@ -66,13 +67,15 @@ public class TodoService {
 
     }
 
-    public Optional<Long> create(TodoEntity todo) {
+    public Optional<Long> create(Todo todo) {
+        TodoEntity todoEntity = Todo.toEntity(todo);
+
         try {
             UserEntity currentUser = getCurrentUser();
             todo.setUser(currentUser);
-            logger.info("Попытка создания задачи в TodoService: {}", todo);
-            todoRepository.save(todo);
-            logger.info("Задача {} создана успешно!", todo);
+            logger.info("Попытка создания задачи в TodoService: {}", todoEntity);
+            todoRepository.save(todoEntity);
+            logger.info("Задача {} создана успешно!", todoEntity);
             return Optional.of(currentUser.getId());
         } catch (UserMustBeAuthenticated | UserNotFoundException e) {
             logger.error("Ошибка создания задачи: {}", e.getMessage());
@@ -89,7 +92,7 @@ public class TodoService {
 
 
 
-    public String update(Long id, TodoEntity todo) {
+    public String update(Long id, Todo todo) {
         Optional<TodoEntity> todoOptional = todoRepository.findById(id);
         if (todoOptional.isPresent()) {
             TodoEntity existingTodo = todoOptional.get();
@@ -106,6 +109,7 @@ public class TodoService {
 
     public void setProgressTODO(TodoEntity todo) {
         todo.setProgress(Progress.TODO);
+        todoRepository.save(todo); // сохранение изменений в бд
     }
 
     public TodoEntity findById(Long id) throws TodoNotFoundException {

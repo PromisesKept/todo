@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import todo.enums.Progress;
 import todo.entity.TodoEntity;
 import todo.exception.TodoNotFoundException;
+import todo.models.Todo;
 import todo.service.TodoService;
 
 import java.util.Optional;
@@ -36,8 +37,9 @@ public class TodoController {
     }
 
     @PostMapping("/")
-    public String create(@ModelAttribute("todo") @Valid TodoEntity todo,
+    public String create(@ModelAttribute("todo") @Valid Todo todo,
                          BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             logger.info("Ошибка валидации на форме создания задачи: {}", bindingResult.getAllErrors());
             return "todo/new";
@@ -53,8 +55,9 @@ public class TodoController {
     }
 
     @GetMapping("/new")
-    public String newTodo(@ModelAttribute("todo") TodoEntity todo) {
-        todoService.setProgressTODO(todo);
+    public String newTodo(@ModelAttribute("todo") Todo todo) {
+        TodoEntity todoEntity = Todo.toEntity(todo);
+        todoService.setProgressTODO(todoEntity);
         return "todo/new";
     }
 
@@ -71,7 +74,7 @@ public class TodoController {
     }
 
     @PostMapping("/{id}")
-    public String update(@ModelAttribute("todo") @Valid TodoEntity todo,
+    public String update(@ModelAttribute("todo") @Valid Todo todo,
                          BindingResult bindingResult,
                          @PathVariable("id") Long id) {
         if (bindingResult.hasErrors()) {

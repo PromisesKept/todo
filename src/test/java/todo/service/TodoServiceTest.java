@@ -15,6 +15,7 @@ import todo.Application;
 import todo.enums.Progress;
 import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
+import todo.models.Todo;
 import todo.repository.TodoRepository;
 import todo.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -80,17 +81,27 @@ public class TodoServiceTest {
 
     @Test
     void createCorrect() {
-        Optional<Long> userId = todoService.create(todo);
+        Todo todoDto = Todo.toModel(todo);
+        Optional<Long> userId = todoService.create(todoDto);
         if (userId.isPresent()) {
             assertEquals(2L, userId.get());
         } else return;
-        verify(todoRepository, times(1)).save(todo);
+        TodoEntity expectedTodoEntity = Todo.toEntity(todoDto);
+        expectedTodoEntity.setUser(user);
+        verify(todoRepository, times(1)).save(argThat(entity ->
+                entity.getTitle().equals(expectedTodoEntity.getTitle()) &&
+                        entity.getDescription().equals(expectedTodoEntity.getDescription()) &&
+                        entity.getProgress().equals(expectedTodoEntity.getProgress()) &&
+                        entity.getUser().equals(expectedTodoEntity.getUser()) &&
+                        entity.getDeadline().isEqual(expectedTodoEntity.getDeadline())
+        ));
     }
 
     @Test
     void createTodoNotFound() {
+        Todo todo1 = Todo.toModel(todo);
         when(todoRepository.findById(1L)).thenReturn(Optional.empty());
-        Optional<Long> createTodo = todoService.create(todo);
+        Optional<Long> createTodo = todoService.create(todo1);
         createTodo.ifPresent(a -> assertEquals(2L, a));
         verify(todoRepository, never()).delete(any(TodoEntity.class));
     }
@@ -110,7 +121,7 @@ public class TodoServiceTest {
         updatedTodo.setUser(user);
         when(todoRepository.findById(id)).thenReturn(Optional.of(todo));
 
-        String result = todoService.update(1L, updatedTodo);
+        String result = todoService.update(1L, Todo.toModel(updatedTodo));
         verify(todoRepository).findById(todo.getId());
         verify(todoRepository).save(todo);
         assertEquals("redirect:/todo/{id}", result);
@@ -124,7 +135,7 @@ public class TodoServiceTest {
     @Test
     void updateTodoNotFound() {
         Long id = 2L;
-        TodoEntity updatedTodo = new TodoEntity();
+        Todo updatedTodo = new Todo();
         when(todoRepository.findById(id)).thenReturn(Optional.empty());
 
         String result = todoService.update(id, updatedTodo);

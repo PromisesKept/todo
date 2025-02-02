@@ -17,6 +17,17 @@ public class Todo {
     private LocalDateTime start;
     private Progress progress;
 
+    public static TodoEntity toEntity(Todo model) {
+        TodoEntity entity = new TodoEntity();
+        entity.setUser(model.getUser());
+        entity.setId(model.getId());
+        entity.setProgress(model.getProgress());
+        entity.setTitle(model.getTitle());
+        entity.setDescription(model.getDescription());
+        entity.setDeadline(model.getDeadline());
+        return entity;
+    }
+
     public static Todo toModel(TodoEntity entity) {
             Todo model = new Todo();
             model.setUser(entity.getUser());
