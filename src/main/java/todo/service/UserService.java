@@ -15,6 +15,7 @@ import todo.entity.TodoEntity;
 import todo.entity.UserEntity;
 import todo.enums.Sort;
 import todo.exception.UserNotFoundException;
+import todo.models.Todo;
 import todo.models.User;
 import todo.repository.UserRepository;
 
@@ -90,7 +91,7 @@ public class UserService implements UserDetailsService {
             model.addAttribute("user", user);
 
             // сортировка
-            List<TodoEntity> todos = null;
+            List<Todo> todos = null;
             switch (sort) {
                 case Sort.START -> todos = todoService.findAllByStart(id);
                 case Sort.PROGRESS -> todos = todoService.findAllByProgress(id);
